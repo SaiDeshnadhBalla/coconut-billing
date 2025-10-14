@@ -1,0 +1,20 @@
+       SRI VENKATESWARA COCONUTS        
+                            10-Aug-2025
+                                        
+V.No.: 1
+Client: Client 04
+----------------------------------------
+Total Coconuts:                    30000
+Less (2.2%):                         660
+Remaining Nuts:                    29340
+Price Each:                        ₹0.70
+----------------------------------------
+Gross Amt:                    ₹20,538.00
+Tax (1%):                        ₹205.38
+Grader Chg:                    ₹3,300.00
+----------------------------------------
+Final Pay:                    ₹17,032.62
+----------------------------------------
+
+                               Signature
+                         (Srinu Kondeti)

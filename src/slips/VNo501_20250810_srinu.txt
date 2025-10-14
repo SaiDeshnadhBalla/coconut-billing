@@ -1,0 +1,20 @@
+        SRI VIJAY DURGA COCONUTS        
+                            10-Aug-2025
+                                        
+V.No.: 501
+Client: srinu
+----------------------------------------
+Total Coconuts:                    10000
+Less (2.2%):                         220
+Remaining Nuts:                     9780
+Price Each:                       ₹22.50
+----------------------------------------
+Gross Amt:                   ₹220,050.00
+Tax (1%):                      ₹2,200.50
+Grader Chg:                    ₹1,100.00
+----------------------------------------
+Final Pay:                   ₹216,749.50
+----------------------------------------
+
+                               Signature
+                          (S RamaPrasad)

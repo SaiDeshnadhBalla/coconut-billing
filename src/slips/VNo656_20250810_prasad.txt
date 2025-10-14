@@ -1,0 +1,20 @@
+       SRI VENKATESWARA COCONUTS        
+                            10-Aug-2025
+                                        
+V.No.: 656
+Client: prasad
+----------------------------------------
+Total Coconuts:                    51465
+Waste (2.2%):                       1132
+Remaining Nuts:                    50333
+Price Each:                       ₹25.00
+----------------------------------------
+Gross Amt:                 ₹1,258,325.00
+Tax (1%):                     ₹12,583.25
+Labor Chg:                     ₹5,661.15
+----------------------------------------
+Final Pay:                 ₹1,240,080.60
+----------------------------------------
+
+                               Signature
+                         (Srinu Kondeti)

@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ title }}</title>
+    <style>
+      :root {
+        --coconut-brown: #2f4f2f; /* deep leaf green for headings */
+        --palm-green: #2e7d32;    /* primary leaf */
+        --palm-green-dark: #1b5e20; /* darker leaf */
+        --leaf: #66bb6a;          /* accent leaf */
+        --sand: #f1f8e9;          /* soft leaf background */
+        --cream: #ffffff;         /* cards */
+      }
+
+      html, body { height: 100%; }
+      body {
+        margin: 0; padding: 0 0 24px;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        background:
+          repeating-linear-gradient(135deg, rgba(46,125,50,0.08) 0 22px, rgba(102,187,106,0.05) 22px 44px),
+          linear-gradient(180deg, var(--sand), #ffffff 50%);
+        color: #274e2e;
+      }
+
+      .brand-bar { height: 8px; background: linear-gradient(90deg, var(--palm-green), var(--leaf)); }
+      .container { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+
+      .card {
+        background: var(--cream);
+        margin-top: 18px;
+        border-radius: 14px;
+        box-shadow: 0 10px 24px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.06);
+        border: 1px solid rgba(0,0,0,0.06);
+        overflow: hidden;
+      }
+
+      .card-header { display: none; }
+      .page-header {
+        background:
+          radial-gradient(1200px 260px at 50% -140px, rgba(46,125,50,0.14), transparent 70%),
+          linear-gradient(180deg, #ffffff, #edf7ee);
+        padding: 18px 22px 12px;
+        border-bottom: 1px solid rgba(46,125,50,0.18);
+      }
+      h1 { text-align: center; margin: 0; color: var(--coconut-brown); letter-spacing: 0.5px; }
+      h1 .emoji { margin-right: 8px; filter: drop-shadow(0 1px 0 rgba(0,0,0,0.05)); }
+      .subtitle { text-align: center; color: #3e5f3e; margin-top: 6px; font-size: 13px; }
+      .date-line { text-align: right; margin: 8px 0 0; font-size: 14px; color: #2f4f2f; }
+
+      .card-body { padding: 20px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+
+      .panel { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 14px; }
+
+      .row { display: flex; gap: 12px; align-items: center; margin: 10px 0; }
+      label { width: 170px; color: #444; }
+      input, select {
+        padding: 8px 10px; font-size: 14px; border-radius: 8px; border: 1px solid #cfcfcf;
+        background: #fff; outline: none;
+      }
+      input:focus, select:focus { border-color: var(--leaf); box-shadow: 0 0 0 3px rgba(46,125,50,0.22); }
+
+      .actions { margin-top: 16px; display: flex; gap: 12px; align-items: center; }
+      .btn {
+        padding: 11px 18px; font-size: 14px; cursor: pointer; border-radius: 10px; border: none;
+        background: linear-gradient(180deg, var(--leaf), var(--palm-green)); color: #fff;
+        box-shadow: 0 6px 14px rgba(46,125,50,0.28), inset 0 1px 0 rgba(255,255,255,0.25);
+      }
+      /* Smaller primary action button */
+      #submitBtn { padding: 8px 12px; font-size: 13px; border-radius: 8px; }
+      .btn:hover { background: linear-gradient(180deg, #58c35c, var(--palm-green-dark)); }
+      .btn-secondary {
+        background: linear-gradient(180deg, #a5d6a7, #2e7d32); color: #fff;
+        padding: 6px 10px; font-size: 12px; border-radius: 8px; border: none;
+        box-shadow: 0 4px 10px rgba(46,125,50,0.25), inset 0 1px 0 rgba(255,255,255,0.18);
+      }
+
+      .preview-title { color: #6b5b4a; font-size: 13px; margin: 0 0 6px 0; }
+      #rangePartyHeading { text-align: left !important; font-weight: 700; }
+      .preview {
+        font-family: "Courier New", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        white-space: pre; border: 1px dashed rgba(47,79,47,0.25);
+        padding: 0; border-radius: 10px; background: #f7fff8;
+      }
+
+      /* Picker styles for Name */
+      .picker { position: relative; }
+      .picker-panel {
+        position: absolute; top: calc(100% + 6px); left: 0; z-index: 1000;
+        width: 260px; background: #fff; border: 1px solid rgba(0,0,0,0.12); border-radius: 10px;
+        box-shadow: 0 12px 26px rgba(0,0,0,0.16); display: none;
+      }
+      .picker-search { width: 100%; box-sizing: border-box; padding: 8px 10px; border: none; border-bottom: 1px solid #eee; }
+      .picker-list { max-height: 220px; overflow: auto; }
+      .picker-item { padding: 8px 10px; cursor: pointer; }
+      .picker-item:hover { background: #f0fff4; }
+
+      .alert { padding: 10px; margin: 10px 0; border-radius: 8px; }
+      .alert-error { background: #ffecec; color: #8f1d1d; border: 1px solid #f5baba; }
+      .alert-ok { background: #e9ffee; color: #0f6a2f; border: 1px solid #bdecc9; }
+      .small { color: #3e5f3e; font-size: 12px; }
+
+      .leaf-divider { height: 6px; margin: 10px 0 18px; border-radius: 6px; background:
+        repeating-linear-gradient(90deg, rgba(46,125,50,.18) 0 14px, rgba(102,187,106,.10) 14px 28px);
+        border: 1px solid rgba(46,125,50,.25);
+      }
+
+      /* Print stylesheet: print only the preview nicely */
+      @media print {
+        body { background: #fff; }
+        .brand-bar, .card-header, form, .alert, .actions.small, .loading-overlay { display: none !important; }
+        .container, .card, .card-body, .panel { box-shadow: none !important; border: none !important; background: #fff !important; }
+        .preview { border: none; padding: 0; font-size: 12px; }
+      }
+
+      /* Loading overlay */
+      .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.75); display: none; align-items: center; justify-content: center; z-index: 9999; }
+      .loading-box { background: #ffffff; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px; padding: 18px 22px; box-shadow: 0 10px 24px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 14px; }
+      .spinner { width: 34px; height: 34px; border: 4px solid var(--leaf); border-top-color: transparent; border-radius: 50%; animation: spin 0.9s linear infinite; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .loading-text { color: var(--palm-green); font-weight: 600; }
+
+      /* Page footer */
+      .site-footer { margin: 24px 0 8px; text-align: center; color: #6b5b4a; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <div class="brand-bar"></div>
+    <div class="page-header">
+      <h1>
+        SRI VIJAYA DURGA COCONUT TRADERS
+        {% if has_logo and logo_url %}
+          <img src="{{ logo_url }}" alt="logo" style="height:28px;vertical-align:middle;border-radius:6px;margin-left:8px;" />
+        {% endif %}
+      </h1>
+      <div class="subtitle">Fresh • Fair • Fast</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+        <div>
+          Search V.No.: <input id="searchVoucherInput" type="number" min="0" placeholder="Enter voucher no" style="width:140px;" />
+          <button type="button" class="btn-secondary" onclick="searchVoucher()">Search</button>
+        </div>
+        <div class="date-line">Date: <input type="text" form="f" name="date" value="{{ (form.date if form else today_iso) }}" /></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="card">
+        <div class="card-body">
+          <div class="leaf-divider"></div>
+
+      {% if error %}
+      <div class="alert alert-error">{{ error }}</div>
+      {% endif %}
+      {% if message %}
+      <div class="alert alert-ok">{{ message }}</div>
+      {% endif %}
+          <div class="grid">
+            <div class="panel">
+              <form id="f" method="post" action="{{ url_for('generate') }}" onsubmit="return onSubmit()">
+                <div class="row">
+                  <label>V.No.</label>
+                  <input name="v_no" value="{{ form.v_no if form else '' }}" />
+                </div>
+                <div class="row">
+                  <label>Name</label>
+                  <div class="picker">
+                    <div style="display:flex; gap:10px; align-items:center;">
+                      <input id="clientNameInput" name="client_name" placeholder="Type a name" value="{{ form.client_name if form else '' }}" />
+                      <button type="button" class="btn-secondary" onclick="togglePicker()">Pick…</button>
+                    </div>
+                    <div id="pickerPanel" class="picker-panel">
+                      <input type="text" id="pickerSearch" class="picker-search" placeholder="Search name" oninput="filterPicker()" />
+                      <div id="pickerList" class="picker-list">
+                        {% for no, name in clients %}
+                        <div class="picker-item" data-no="{{ no }}" data-name="{{ name }}">{{ name }}</div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                  <input type="hidden" name="client_no" id="clientNoHidden" value="{{ form.client_no if form else '' }}" />
+                  <input type="hidden" name="party_name" id="partyNameHidden" value="{{ form.party_name if form else '' }}" />
+                </div>
+                <div class="row">
+                  <label>Total Coconuts</label>
+                  <input name="total_nuts" type="number" min="1" value="{{ form.total_nuts if form else '' }}" />
+                </div>
+                <div class="row">
+                  <label>Price Each (₹)</label>
+                  <input name="price_each" type="number" step="0.01" min="0.01" value="{{ form.price_each if form else '' }}" />
+                </div>
+                <div class="row">
+                  <!-- Party Name moved to voucher range column per plan -->
+                </div>
+                <div class="actions">
+                  <button id="submitBtn" class="btn" type="submit">Calculate</button>
+                  <button type="button" class="btn" onclick="printSlip()">Print</button>
+                  <button type="button" class="btn" onclick="saveSlip()">Save</button>
+                  <div class="small">Check for errors before saving.</div>
+                </div>
+              </form>
+            </div>
+            <div class="panel">
+              <div class="preview-title">Slip Preview</div>
+              <div id="slipPreview" class="preview">{{ slip_text or 'Submit the form to preview the slip.' }}</div>
+              
+            </div>
+          </div>
+
+          <!-- New sections: Voucher Range and Party Name -->
+          <div class="grid" style="margin-top:16px;">
+            <div class="panel">
+              <div class="preview-title">Voucher Range</div>
+              <form id="rangeForm" method="post" action="{{ url_for('voucher_range') }}" onsubmit="return onSubmit()">
+                <div class="row">
+                  <label>From V.No.</label>
+                  <input name="range_from" type="number" min="0" value="{{ form.range_from if form else '' }}" />
+                </div>
+                <div class="row">
+                  <label>To V.No.</label>
+                  <input name="range_to" type="number" min="0" value="{{ form.range_to if form else '' }}" />
+                </div>
+                <div class="row">
+                  <label>Party Name</label>
+                  <div class="picker" id="partyPicker">
+                    <div style="display:flex; gap:10px; align-items:center;">
+                      <input id="partyNameRange" name="party_name" list="partyList" placeholder="Select or type name" value="{{ form.party_name if form else '' }}" />
+                    </div>
+                    <div id="partyPickerPanel" class="picker-panel">
+                      <input type="text" id="partyPickerSearch" class="picker-search" placeholder="Search party" oninput="filterPartyPicker()" />
+                      <div id="partyPickerList" class="picker-list">
+                        {% for name in parties %}
+                        <div class="picker-item" data-name="{{ name }}">{{ name }}</div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="actions">
+                  <button class="btn" type="submit">Show Range</button>
+                </div>
+              </form>
+            </div>
+            <div class="panel">
+              <div id="rangePartyHeading" class="preview-title" style="font-weight:700;">{{ form.party_name if form else '' }}</div>
+              <div class="preview-title">Range Preview</div>
+              <div id="rangePreview" class="preview">{{ report_text or 'Enter voucher range and click Show.' }}</div>
+              <div class="actions small">
+                <button type="button" class="btn" onclick="printRange()">Print Range</button>
+                <button type="button" class="btn" onclick="saveRange()">Save Range</button>
+              </div>
+            </div>
+          </div>
+          <datalist id="partyList">
+            {% for name in parties %}
+            <option value="{{ name }}"></option>
+            {% endfor %}
+          </datalist>
+        </div>
+      </div>
+    </div>
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="loading-box">
+        <div class="spinner"></div>
+        <div class="loading-text">Processing…</div>
+      </div>
+    </div>
+    <div class="site-footer">Courtesy: Sai Deshnadh Balla</div>
+
+    <script>
+      function onSubmit() {
+        try {
+          var btn = document.getElementById('submitBtn');
+          if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
+          var overlay = document.getElementById('loadingOverlay');
+          if (overlay) { overlay.style.display = 'flex'; }
+        } catch (e) { /* noop */ }
+        return true; // proceed with submit
+      }
+
+      // Save current slip by posting the current form fields to /slip-save
+      function saveSlip() {
+        var f = document.getElementById('f');
+        if (!f) return;
+        var body = {
+          v_no: (f.querySelector('input[name="v_no"]')?.value || '').trim(),
+          client_no: (f.querySelector('input[name="client_no"]')?.value || '').trim(),
+          client_name: (f.querySelector('input[name="client_name"]')?.value || '').trim(),
+          total_nuts: (f.querySelector('input[name="total_nuts"]')?.value || '').trim(),
+          price_each: (f.querySelector('input[name="price_each"]')?.value || '').trim(),
+          date: (f.querySelector('input[name="date"]')?.value || '').trim(),
+        };
+        if (!body.v_no) { alert('V.No. is required'); return; }
+        if (!body.client_name && !body.client_no) { alert('Please pick or enter a name'); return; }
+        if (!body.total_nuts) { alert('Total Coconuts is required'); return; }
+        if (!body.price_each) { alert('Price Each is required'); return; }
+        fetch("{{ url_for('slip_save') }}", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        }).then(r => r.json()).then(function(resp){
+          if (resp && resp.ok) {
+            alert('Saved: ' + resp.filename);
+          } else if (resp && resp.message) {
+            alert(resp.message);
+          } else {
+            alert('Save failed');
+          }
+        }).catch(function(){ alert('Save failed'); });
+      }
+
+      // Print only the slip by opening a lightweight print window
+      function printSlip() {
+        var el = document.querySelector('.preview');
+        var text = el ? el.textContent : '';
+        var escaped = (text || '').replace(/[&<>]/g, function(ch){
+          return ({'&':'&amp;','<':'&lt;','>':'&gt;'}[ch] || ch);
+        });
+        var w = window.open('', '_blank', 'width=720,height=900');
+        if (!w) { window.print(); return; }
+        w.document.open();
+        w.document.write(
+          '<!doctype html><html><head><meta charset="utf-8" />' +
+          '<title>Slip</title>' +
+          '<style>@page{size:105mm 148mm;margin:6mm} body{margin:0;padding:0;background:#fff}' +
+          '.wrap{padding:0;font-family:\"Courier New\",ui-monospace,monospace;font-size:11pt;line-height:1.35}' +
+          'pre{white-space:pre-wrap;margin:0}' +
+          '</style></head><body><div class="wrap"><pre>' + escaped + '</pre></div></body></html>'
+        );
+        w.document.close();
+        w.focus();
+        setTimeout(function(){ try { w.print(); } finally { w.close(); } }, 150);
+      }
+
+      function printRange() {
+        var el = document.getElementById('rangePreview');
+        var headingEl = document.getElementById('rangePartyHeading');
+        var text = el ? el.textContent : '';
+        var title = headingEl ? (headingEl.textContent || '').trim() : '';
+        var escaped = (text || '').replace(/[&<>]/g, function(ch){
+          return ({'&':'&amp;','<':'&lt;','>':'&gt;'}[ch] || ch);
+        });
+        var escapedTitle = (title || '').replace(/[&<>]/g, function(ch){
+          return ({'&':'&amp;','<':'&lt;','>':'&gt;'}[ch] || ch);
+        });
+        if ((!text || /Enter voucher range/.test(text)) && !title) return;
+        var w = window.open('', '_blank', 'width=720,height=900');
+        if (!w) { window.print(); return; }
+        w.document.open();
+        w.document.write(
+          '<!doctype html><html><head><meta charset="utf-8" />' +
+          '<title>Voucher Range</title>' +
+          '<style>@page{size:105mm 148mm;margin:6mm} body{margin:0;padding:0;background:#fff}' +
+          '.wrap{padding:0;font-family:\"Courier New\",ui-monospace,monospace;font-size:11pt;line-height:1.35}' +
+          'h2{margin:0 0 10px 0;text-align:left;font:600 13pt system-ui,Segoe UI,Arial}' +
+          'pre{white-space:pre-wrap;margin:0}' +
+          '</style></head><body><div class="wrap">' +
+          (title ? ('<h2>' + escapedTitle + '</h2>') : '') +
+          '<pre>' + escaped + '</pre></div></body></html>'
+        );
+        w.document.close();
+        w.focus();
+        setTimeout(function(){ try { w.print(); } finally { w.close(); } }, 150);
+      }
+
+      // Save range via POST to /voucher-range-save without reloading the whole form
+      function saveRange() {
+        var party = (document.getElementById('partyNameRange')?.value || '').trim();
+        var fromV = (document.querySelector('input[name="range_from"]')?.value || '').trim();
+        var toV = (document.querySelector('input[name="range_to"]')?.value || '').trim();
+        var text = (document.getElementById('rangePreview')?.textContent || '').trim();
+        if (!fromV || !toV) {
+          alert('Please enter From and To voucher numbers.');
+          return;
+        }
+        if (!text || /Enter voucher range/.test(text)) {
+          alert('Enter range and generate report first.');
+          return;
+        }
+        fetch("{{ url_for('voucher_range_save') }}", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ party_name: party, from_vno: fromV, to_vno: toV, report_text: text, date: (document.querySelector('input[name="date"]')?.value || '') })
+        }).then(r => r.json()).then(function(resp){
+          if (resp && resp.ok) {
+            alert('Saved: ' + resp.filename);
+          } else if (resp && resp.message) {
+            alert(resp.message);
+          } else {
+            alert('Save failed');
+          }
+        }).catch(function(){ alert('Save failed'); });
+      }
+
+      // No auto-print for range; user triggers via button
+
+      // Make picking robust with event delegation (in case inline onclick is blocked)
+      document.getElementById('pickerList')?.addEventListener('click', function(ev){
+        var item = ev.target && ev.target.closest ? ev.target.closest('.picker-item') : null;
+        if (!item) return;
+        var no = item.getAttribute('data-no');
+        var nm = item.getAttribute('data-name');
+        if (no && nm) {
+          pickName(no, nm);
+        }
+      });
+
+      function togglePicker() {
+        var panel = document.getElementById('pickerPanel');
+        if (!panel) return;
+        panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+        if (panel.style.display === 'block') {
+          document.getElementById('pickerSearch')?.focus();
+        }
+      }
+      function filterPicker() {
+        var q = (document.getElementById('pickerSearch')?.value || '').toLowerCase();
+        var items = document.querySelectorAll('#pickerList .picker-item');
+        items.forEach(function(el){
+          var name = (el.getAttribute('data-name') || '').toLowerCase();
+          el.style.display = name.indexOf(q) >= 0 ? 'block' : 'none';
+        });
+      }
+      function pickName(no, name) {
+        var nameInput = document.getElementById('clientNameInput');
+        var hidden = document.getElementById('clientNoHidden');
+        if (nameInput) nameInput.value = name;
+        if (hidden) hidden.value = String(no);
+        var panel = document.getElementById('pickerPanel');
+        if (panel) panel.style.display = 'none';
+      }
+      // If the user types manually, mark as ad-hoc (client_no=0)
+      document.getElementById('clientNameInput')?.addEventListener('input', function(){
+        var hidden = document.getElementById('clientNoHidden');
+        if (hidden) hidden.value = '0';
+      });
+      // Close picker when clicking outside
+      document.addEventListener('click', function(ev){
+        var combo = document.querySelector('.picker');
+        var panel = document.getElementById('pickerPanel');
+        if (!combo || !panel) return;
+        if (!combo.contains(ev.target)) panel.style.display = 'none';
+      });
+
+      // Party picker interactions
+      function togglePartyPicker(ev){
+        if (ev && ev.stopPropagation) ev.stopPropagation();
+        var panel = document.getElementById('partyPickerPanel');
+        if (!panel) return;
+        panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+        if (panel.style.display === 'block') {
+          document.getElementById('partyPickerSearch')?.focus();
+        }
+      }
+      // Close party picker when clicking outside
+      document.addEventListener('click', function(ev){
+        var combo = document.getElementById('partyPicker');
+        var panel = document.getElementById('partyPickerPanel');
+        if (!combo || !panel) return;
+        if (!combo.contains(ev.target)) panel.style.display = 'none';
+      });
+      function filterPartyPicker(){
+        var q = (document.getElementById('partyPickerSearch')?.value || '').toLowerCase();
+        document.querySelectorAll('#partyPickerList .picker-item').forEach(function(el){
+          var name = (el.getAttribute('data-name') || '').toLowerCase();
+          el.style.display = name.indexOf(q) >= 0 ? 'block' : 'none';
+        });
+      }
+      document.getElementById('partyPickerList')?.addEventListener('click', function(ev){
+        var item = ev.target && ev.target.closest ? ev.target.closest('.picker-item') : null;
+        if (!item) return;
+        var nm = item.getAttribute('data-name') || '';
+        var input = document.getElementById('partyNameRange');
+        if (input) input.value = nm;
+        var hidden = document.getElementById('partyNameHidden');
+        if (hidden) hidden.value = nm;
+        var heading = document.getElementById('rangePartyHeading');
+        if (heading) heading.textContent = nm;
+        var panel = document.getElementById('partyPickerPanel');
+        if (panel) panel.style.display = 'none';
+      });
+
+      // Keep Party Name heading and hidden form in sync with range input
+      (function(){
+        var src = document.getElementById('partyNameRange');
+        var hidden = document.getElementById('partyNameHidden');
+        var heading = document.getElementById('rangePartyHeading');
+        function sync(){
+          var v = src ? src.value : '';
+          if (hidden) hidden.value = v;
+          if (heading) heading.textContent = v;
+        }
+        if (src) {
+          src.addEventListener('input', sync);
+          sync();
+        }
+      })();
+
+      // Search voucher by number and populate form/preview
+      function searchVoucher(){
+        var v = (document.getElementById('searchVoucherInput')?.value || '').trim();
+        if (!v) { alert('Enter voucher number'); return; }
+        fetch("{{ url_for('voucher_get') }}?v_no=" + encodeURIComponent(v), {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        }).then(function(r){ return r.json(); }).then(function(resp){
+          if (!resp || !resp.ok) {
+            alert(resp && resp.message ? resp.message : 'Voucher not found');
+            return;
+          }
+          var f = document.getElementById('f');
+          if (f) {
+            var set = function(sel, val){ var el = f.querySelector(sel); if (el) el.value = val == null ? '' : String(val); };
+            set('input[name="v_no"]', resp.data?.v_no);
+            set('input[name="client_no"]', resp.data?.client_no || '');
+            set('input[name="client_name"]', resp.data?.client_name || '');
+            set('input[name="total_nuts"]', resp.data?.total_nuts || '');
+            set('input[name="price_each"]', resp.data?.price_each || '');
+            set('input[name="date"]', resp.data?.date || (document.querySelector('input[name="date"]')?.value || ''));
+          }
+          var prev = document.getElementById('slipPreview');
+          if (prev) prev.textContent = resp.data?.slip_text || 'Loaded voucher.';
+        }).catch(function(){ alert('Search failed'); });
+      }
+    </script>
+  </body>
+  </html>
+
+

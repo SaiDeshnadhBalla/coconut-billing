@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ title }} — Dashboard</title>
+    <style>
+      body { margin:0; font-family: system-ui, Segoe UI, Arial, sans-serif; background: #fafafa; }
+      .brand { display:flex; align-items:center; gap:10px; padding:14px 18px; background:#fff; border-bottom:1px solid #eee; }
+      .brand h1 { font-size:18px; margin:0; }
+      .wrap { max-width: 980px; margin: 18px auto; padding: 0 18px; }
+      .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap:16px; }
+      .card { background:#fff; border:1px solid #eee; border-radius:10px; padding:16px; box-shadow:0 4px 12px rgba(0,0,0,0.06); }
+      .card h2 { margin:0 0 8px; font-size:16px; }
+      .actions { display:flex; gap:12px; flex-wrap:wrap; }
+      .btn { padding:10px 14px; border:none; border-radius:8px; cursor:pointer; background:#2e7d32; color:#fff; }
+      .btn.secondary { background:#558b2f; }
+      a.btn { text-decoration:none; display:inline-block; }
+    </style>
+  </head>
+  <body>
+    <div class="brand">
+      {% if has_logo and logo_url %}
+      <img src="{{ logo_url }}" alt="logo" style="height:28px;border-radius:6px;" />
+      {% endif %}
+      <h1>{{ title }} — Dashboard</h1>
+    </div>
+    <div class="wrap">
+      <div class="grid">
+        <div class="card">
+          <h2>Pay Slip</h2>
+          <div>Generate and print a single slip.</div>
+          <div class="actions" style="margin-top:10px;">
+            <a class="btn" href="{{ url_for('index') }}">Open Pay Slip</a>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Voucher Range</h2>
+          <div>Show, print and save a voucher range report.</div>
+          <div class="actions" style="margin-top:10px;">
+            <a class="btn secondary" href="{{ url_for('index') }}#range">Open Range</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  </html>
+
+
