@@ -55,26 +55,29 @@
       .panel { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 10px; padding: 14px; }
 
       .row { display: flex; gap: 12px; align-items: center; margin: 10px 0; }
-      label { width: 170px; color: #444; }
+      label { width: 170px; color: #444; flex-shrink: 0; }
       input, select {
         padding: 8px 10px; font-size: 14px; border-radius: 8px; border: 1px solid #cfcfcf;
-        background: #fff; outline: none;
+        background: #fff; outline: none; min-height: 44px; /* Touch-friendly */
       }
       input:focus, select:focus { border-color: var(--leaf); box-shadow: 0 0 0 3px rgba(46,125,50,0.22); }
 
-      .actions { margin-top: 16px; display: flex; gap: 12px; align-items: center; }
+      .actions { margin-top: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
       .btn {
         padding: 11px 18px; font-size: 14px; cursor: pointer; border-radius: 10px; border: none;
         background: linear-gradient(180deg, var(--leaf), var(--palm-green)); color: #fff;
         box-shadow: 0 6px 14px rgba(46,125,50,0.28), inset 0 1px 0 rgba(255,255,255,0.25);
+        min-height: 44px; /* Touch-friendly */
+        min-width: 80px;
       }
       /* Smaller primary action button */
       #submitBtn { padding: 8px 12px; font-size: 13px; border-radius: 8px; }
       .btn:hover { background: linear-gradient(180deg, #58c35c, var(--palm-green-dark)); }
       .btn-secondary {
         background: linear-gradient(180deg, #a5d6a7, #2e7d32); color: #fff;
-        padding: 6px 10px; font-size: 12px; border-radius: 8px; border: none;
+        padding: 8px 12px; font-size: 12px; border-radius: 8px; border: none;
         box-shadow: 0 4px 10px rgba(46,125,50,0.25), inset 0 1px 0 rgba(255,255,255,0.18);
+        min-height: 40px; /* Touch-friendly */
       }
 
       .preview-title { color: #6b5b4a; font-size: 13px; margin: 0 0 6px 0; }
@@ -91,10 +94,11 @@
         position: absolute; top: calc(100% + 6px); left: 0; z-index: 1000;
         width: 260px; background: #fff; border: 1px solid rgba(0,0,0,0.12); border-radius: 10px;
         box-shadow: 0 12px 26px rgba(0,0,0,0.16); display: none;
+        max-width: calc(100vw - 40px); /* Mobile constraint */
       }
       .picker-search { width: 100%; box-sizing: border-box; padding: 8px 10px; border: none; border-bottom: 1px solid #eee; }
       .picker-list { max-height: 220px; overflow: auto; }
-      .picker-item { padding: 8px 10px; cursor: pointer; }
+      .picker-item { padding: 12px 10px; cursor: pointer; min-height: 44px; display: flex; align-items: center; }
       .picker-item:hover { background: #f0fff4; }
 
       .alert { padding: 10px; margin: 10px 0; border-radius: 8px; }
@@ -124,6 +128,39 @@
 
       /* Page footer */
       .site-footer { margin: 24px 0 8px; text-align: center; color: #6b5b4a; font-size: 12px; }
+
+      /* Mobile Responsive Styles */
+      @media (max-width: 768px) {
+        .container { padding: 0 12px; }
+        .page-header { padding: 12px 16px 8px; }
+        h1 { font-size: 18px; }
+        .subtitle { font-size: 12px; }
+        .grid { grid-template-columns: 1fr; gap: 16px; }
+        .row { flex-direction: column; align-items: stretch; gap: 8px; }
+        label { width: auto; margin-bottom: 4px; font-weight: 600; }
+        input, select { width: 100%; box-sizing: border-box; }
+        .actions { flex-direction: column; align-items: stretch; gap: 8px; }
+        .btn { width: 100%; justify-content: center; }
+        .btn-secondary { width: 100%; }
+        .preview { font-size: 11px; padding: 8px; }
+        .picker-panel { width: 100%; left: 0; right: 0; }
+        .date-line { text-align: left; margin-top: 8px; }
+        .date-line input { width: 120px; }
+        #searchVoucherInput { width: 100px; }
+        .small { text-align: center; }
+      }
+
+      @media (max-width: 480px) {
+        .container { padding: 0 8px; }
+        .page-header { padding: 8px 12px 6px; }
+        h1 { font-size: 16px; }
+        .card { margin-top: 12px; border-radius: 10px; }
+        .card-body { padding: 12px; }
+        .panel { padding: 10px; }
+        .preview { font-size: 10px; }
+        .btn { padding: 12px 16px; font-size: 13px; }
+        .btn-secondary { padding: 10px 12px; font-size: 11px; }
+      }
     </style>
   </head>
   <body>
@@ -136,9 +173,10 @@
         {% endif %}
       </h1>
       <div class="subtitle">Fresh • Fair • Fast</div>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
-        <div>
-          Search V.No.: <input id="searchVoucherInput" type="number" min="0" placeholder="Enter voucher no" style="width:140px;" />
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; flex-wrap:wrap; gap:8px;">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span style="white-space:nowrap;">Search V.No.:</span>
+          <input id="searchVoucherInput" type="number" min="0" placeholder="Enter voucher no" style="width:140px;" />
           <button type="button" class="btn-secondary" onclick="searchVoucher()">Search</button>
         </div>
         <div class="date-line">Date: <input type="text" form="f" name="date" value="{{ (form.date if form else today_iso) }}" /></div>
