@@ -1,12 +1,1 @@
-Party: *****SANKHESWARA COCONUTS*****
-Range: 1..5
-Saved At (UTC): 2025-08-10T17:53:58
 
-1. Client 04 (1)    =    17,032.62
-2. deshnadh 02 (1)  =    17,032.62
-3. deshnadh 02 (1)  =  3,45,259.20
-4. prasad (1)       =     2,123.44
-5. Client 02 (2)    =    23,165.40
-6. deshnadh 02 (2)  =    21,190.84
-7. srinu (3)        =  2,11,908.40
-8. devi (4)         =  4,23,816.80
